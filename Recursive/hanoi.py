@@ -1,13 +1,13 @@
-def move(n, start, end):
-    print(f"Move {n} disk, from {start} to {end}")
+def move(N, start, to):
+    print(f"Move {N} disk, from {start} to {to}")
 
-def hanoi(n, start ,via ,end):
-    if n == 1:
-        move(n, start, end)
+def hanoi(N, start, via, to):
+    if N == 1:
+        move(1, start, to)
     else:
-        hanoi(n-1, start, end, via)
-        move(n, start, end)
-        hanoi(n-1, start, via ,end)
+        hanoi(N-1, start, to, via)
+        move(N, start, to)
+        hanoi(N-1, via, start, to)
         
 if __name__ == '__main__':
     n = int(input())
