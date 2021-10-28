@@ -24,6 +24,7 @@ void push(int data){
     newnode -> data = data;
     newnode -> link = top;
     top = newnode;
+
 }
 
 int isEmpty(){
@@ -46,29 +47,44 @@ void pop(){
     }
 }
 
+struct LinkedList *createNode(int data){
+
+    struct LinkedList *temp = (struct LinkedList*)malloc(sizeof(struct LinkedList));
+    temp ->next= NULL;
+    temp->data = data;
+    return temp;
+};
+
 void LL_insert_node_last(int data, struct LinkedList **head){
 
-    struct LinkedList *node = malloc(sizeof(struct LinkedList));
+    struct LinkedList *newnode = createNode(data);
 
-    node -> next = *head;
-    node -> data = data;
-    *head = node;
+    if((*head) == NULL){
+        (*head) = newnode;
+    }
+    else{
+        struct LinkedList *temp = *head;
+        while(temp ->next !=NULL){
+            temp = temp->next;
+        }
+        temp->next = newnode;
+    }
 
     push(data);
+
 }
 
 void LL_display(struct LinkedList *head){
 
+    struct LinkedList *p = head;
+    printf("List after insert operations: ");
 
-    if(head != NULL){
-        struct LinkedList *temp = head;
-        while(head){
-            printf("%d ", head->data);
-            head = head-> next;
-        }
+    while(p->next != NULL){
+        printf("%d ", p->data);
+        p = p->next;
     }
 
-    printf(" StackNode: ");
+    printf("\nReversed: ");
     if(isEmpty() == 0){
         stackNode *temp = top;
         while(temp){
@@ -78,18 +94,12 @@ void LL_display(struct LinkedList *head){
     }
 }
 
-
 int main(){
 
-    int i;
-
-    printf("List after insert operations: ");
-    for(i=0; i < 10; i++){
-        LL_insert_node_last(i, &head);
-        printf("%d ", i);
+    for(int i=0; i < 10; i++){
+       LL_insert_node_last(i, &head);
     }
 
-    printf("\nReversed: ");
     LL_display(head);
 
     return 0;
