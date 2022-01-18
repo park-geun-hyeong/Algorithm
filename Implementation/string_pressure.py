@@ -1,49 +1,36 @@
-import sys 
-read  = sys.stdin.readline
+import sys
+read = sys.stdin.readline
+
 
 def solution(S):
-    
     length = len(S)
-    short_len = [length] 
-    
+    if length == 1:
+        return 1
+    elif list(S).count(S[0]) == len(S):
+        return len("{}{}".format(len(S), S[0]))
+
+    answer = length
+
     for window in range(1, length // 2 + 1):
-        start = 0
         new_string = ''
-         
-        for i in range(length - window+1):
-            if i == start: 
-                if len(S[i:]) < 2*window:
-                    new_string += S[i:]
-                    break
-                    
-                now_word = S[i:i+window]
-                if now_word != S[i+window: i+2*window]:
-                    new_string += now_word
-                    start = i+window                
-                    continue
-
-                else:    
-                    num = 1
-                    for j in range(i+window, length - window+1, window):
-                        next_word = S[j: j+window]
-                        if now_word == next_word:
-                            num += 1
-                            start = j+window
-                        else:
-                            break
-
-
-                    new_string += "{}{}".format(num, now_word)
-                    continue
-            
-            else:
+        now_word = S[0:window]
+        cnt = 1
+        for i in range(window, length, window):
+            next_word = S[i:i + window]
+            if now_word == next_word:
+                cnt += 1
                 continue
-                
-        short_len.append(len(new_string))       
-        
-    answer = min(short_len) 
+            else:
+                new_string += "{}{}".format(cnt, now_word) if cnt != 1 else "{}".format(now_word)
+                cnt = 1
+                now_word = next_word
+
+        new_string += "{}{}".format(cnt, now_word) if cnt != 1 else "{}".format(now_word)
+        answer = min(answer, len(new_string))
+
     return answer
-    
+
+
 if __name__ == "__main__":
     S = input()
     print(solution(S))
