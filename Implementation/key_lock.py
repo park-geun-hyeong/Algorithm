@@ -1,7 +1,9 @@
-import sys 
-read  = sys.stdin.readline
+'''
+# 나의 코드는 정확도 97%의 점수로 탈락했는데 어떤 예외가 있는지 다시 생각해보기
 
-def rotation(key_out):
+from copy import deepcopy
+
+def rotation(m,key_out):
     # 시계방향 90도
     new_key=[]
     for i in key_out:
@@ -9,6 +11,16 @@ def rotation(key_out):
         new_key.append([col, m-1-row])
         
     return new_key
+
+def check(n,lock_padding):
+    
+    padding_length = len(lock_padding)
+    for i in range(n-1, padding_length - (n-1)):
+        for j in range(n-1, padding_length - (n-1)):
+            if lock_padding[i][j] != 1:
+                return False
+    
+    return True
 
 def solution(key ,lock):
     m = len(key)
@@ -28,75 +40,82 @@ def solution(key ,lock):
         for j in range(m):
             if key[i][j] == 1:
                 key_out.append([i,j])
+     
+
+    for _ in range(4):
+        key_out = rotation(m,key_out)
+        for i in range(padding_length - (n-1)):
+            for j in range(padding_length - (n-1)):
+                drow = i 
+                dcol = j
+                copy_padding_lock = deepcopy(lock_padding)
+                for row, col in key_out:
+                    nrow = drow + row
+                    ncol = dcol + col
+                    
+                    copy_padding_lock[nrow][ncol] += 1
                 
+                if check(n, copy_padding_lock):
+                    return True
+                    
+    return False
+'''
+
+def rotation(key):
     
-    lp1 = lock_padding.copy()         
-    for i in range(padding_length - (n-1)):
-        for j in range(padding_length - (n-1)):
-            drow = i
-            dcol = j
-            for row, col in key_out:
-                nrow = drow + row
-                ncol = dcol + col
-                
-                if (n-1<= nrow < padding_length-(n-1)) and (n-1<= ncol < padding_length-(n-1)) and lp1[nrow][ncol] == 1:
-                     break
-                    
-                lp1[nrow][ncol] += 1
-            if sum([sum(lp1[i][n-1: padding_length-(n-1)]) for i in range(n-1, padding_length-(n-1))]) == n**2:
-                return True
-            
-    key_out = rotation(key_out)
-    lp2 = lock_padding.copy()         
-    for i in range(padding_length - (n-1)):
-        for j in range(padding_length - (n-1)):
-            drow = i
-            dcol = j
-            for row, col in key_out:
-                nrow = drow + row
-                ncol = dcol + col
-                
-                if (n-1<= nrow < padding_length-(n-1)) and (n-1<= ncol < padding_length-(n-1)) and lp2[nrow][ncol] == 1:
-                     break
-                    
-                lp2[nrow][ncol] += 1
-            if sum([sum(lp2[i][n-1: padding_length-(n-1)]) for i in range(n-1, padding_length-(n-1))]) == n**2:
-                return True
+    m = len(key)
+    new_key=[[0]*m for _ in range(m)]
+    for row in range(m):
+        for col in range(m):
+            new_key[col][m-1-row] = key[row][col]
     
-    key_out = rotation(key_out)
-    lp3 = lock_padding.copy()         
-    for i in range(padding_length - (n-1)):
-        for j in range(padding_length - (n-1)):
-            drow = i
-            dcol = j
-            for row, col in key_out:
-                nrow = drow + row
-                ncol = dcol + col
-                
-                if (n-1<= nrow < padding_length-(n-1)) and (n-1<= ncol < padding_length-(n-1)) and lp3[nrow][ncol] == 1:
-                     break
+    return new_key
+
+def check(lock_padding):
+    
+    padding_length = len(lock_padding)
+    n = padding_length // 3
+    
+    for i in range(n, 2*n):
+        for j in range(n, 2*n):
+            if lock_padding[i][j] != 1:
+                return False
+    
+    return True
+
+def solution(key ,lock):
+    m = len(key)
+    n = len(lock)
+    
+    padding_length = 3*n
+    
+    lock_padding = [[0] * padding_length for _ in range(padding_length)]
+    for i in range(n):
+        for j in range(n):
+            lock_padding[i+n][j+n] = lock[i][j] 
+
+    for _ in range(4):
+        key = rotation(key)
+        for drow in range(2*n):
+            for dcol in range(2*n):
+                for key_row in range(m):
+                    for key_col in range(m):
+                        nrow = key_row + drow
+                        ncol = key_col + dcol
+                        
+                        lock_padding[nrow][ncol] += key[key_row][key_col]
                     
-                lp3[nrow][ncol] += 1
-            if sum([sum(lp3[i][n-1: padding_length-(n-1)]) for i in range(n-1, padding_length-(n-1))]) == n**2:
-                return True
-            
-    key_out = rotation(key_out)
-    lp4 = lock_padding.copy()         
-    for i in range(padding_length - (n-1)):
-        for j in range(padding_length - (n-1)):
-            drow = i
-            dcol = j
-            for row, col in key_out:
-                nrow = drow + row
-                ncol = dcol + col
+                if check(lock_padding):
+                    return True
                 
-                if (n-1<= nrow < padding_length-(n-1)) and (n-1<= ncol < padding_length-(n-1)) and lp4[nrow][ncol] == 1:
-                     break
-                    
-                lp4[nrow][ncol] += 1
-            if sum([sum(lp4[i][n-1: padding_length-(n-1)]) for i in range(n-1, padding_length-(n-1))]) == n**2:
-                return True              
-             
+                ## padding lock 원상복귀
+                for key_row in range(m):
+                    for key_col in range(m):
+                        nrow = key_row + drow
+                        ncol = key_col + dcol
+                        
+                        lock_padding[nrow][ncol] -= key[key_row][key_col]
+                                            
     return False
     
 if __name__ == "__main__":
