@@ -1,3 +1,5 @@
+#https://programmers.co.kr/learn/courses/30/lessons/60058
+
 def correct_check(p):
     left=0
     right=0
