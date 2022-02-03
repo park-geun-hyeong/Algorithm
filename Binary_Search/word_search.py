@@ -78,4 +78,19 @@ def solution(words, queries):
             left_value = q.replace('?', 'a')
             right_value = q.replace('?', 'z')
             
+        elif q[0] == '?':
+            array = words_split[len(q)][1]
+            left_value = q[::-1].replace('?', 'a')
+            right_value = q[::-1].replace('?', 'z')
+                 
+        answer.append(cnt_check(left_value, right_value, array))    
+    
+    return answer
+
+if __name__ == "__main__":
+    words = ["frodo", "front", "frost", "frozen", "frame", "kakao"]
+    queries = ["fro??", "????o", "fr???", "fro???", "pro?"]
+    print(solution(words, queries))
+    
+            
 
