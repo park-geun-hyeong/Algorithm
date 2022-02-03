@@ -45,7 +45,7 @@ def solution(words, queries):
     
     return answer
 '''
-
+# https://programmers.co.kr/learn/courses/30/lessons/60060
 
 from bisect import bisect_left, bisect_right
 import sys 
