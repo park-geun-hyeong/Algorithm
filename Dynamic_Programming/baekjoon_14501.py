@@ -29,7 +29,6 @@ def solution(n, time_sheet):
 if __name__ == "__main__":
     n = int(input())
     time_sheet = [list(map(int, input().split())) for _ in range(n)]
-    
     print(solution(n, time_sheet))
     
    
