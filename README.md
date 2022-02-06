@@ -1,5 +1,13 @@
 # Algorithm Study Repository
-#### 1. study with "baekjoon"
-#### 2. study with book named "Data Structure by C"
-#### 3. study with "linux Embedded programming" class
-#### 4. study with book named "Coding test for employment"
+## Baekjoon & 이것이 취업을 위한 코딩테스트다
+- BFS_DFS
+- BackTracking
+- Binary_Search
+- Dynamic
+- Greedy
+- Implementation
+- Queue_Stack
+- Recursive
+- Shortest_Path
+- Sorting
+- Tree
