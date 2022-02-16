@@ -1,3 +1,4 @@
+# https://softeer.ai/practice/info.do?eventIdx=1&psProblemId=580&sw_prbl_sbms_sn=43796
 import sys
 read = sys.stdin.readline
 
