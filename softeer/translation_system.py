@@ -27,7 +27,7 @@ def return_direc(i):
     
 def next_direction(direction, graph, row,col, time):
     order = time%4
-    state = graph[row][col][order%4]
+    state = graph[row][col][order]
     n = len(graph)
     move = [[1,0],[-1,0],[0,1],[0,-1]]
     next_step = []

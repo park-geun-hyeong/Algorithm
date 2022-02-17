@@ -50,7 +50,8 @@ def next_direction(direction, graph, row,col, time):
         return next_step
     return False
             
-ans = [[0,0]]
+ans = set()
+ans.add((0,0))
 def recursive(direction, graph, row,col, time):
         
     global ans
@@ -65,8 +66,7 @@ def recursive(direction, graph, row,col, time):
     
     for nrow, ncol, direc in next_step:
         recursive(direc, graph, nrow, ncol, time + 1)
-        if [nrow,ncol] not in ans:
-            ans.append([nrow, ncol])
+        ans.add((nrow,ncol))
 
 if __name__ == "__main__":
     n,t = map(int, read().split())
