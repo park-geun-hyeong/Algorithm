@@ -1,112 +1,97 @@
 import sys
-from collections import deque
+from collections import deque, defaultdict
 read = sys.stdin.readline
 
-def possible(i, same_time):
-    
-    if isinstance(same_time[0], tuple):
-        same_time = [i[2] for i in same_time]
+def zero():
+    return 0 
+
+def possible(i,cand):
     
     if i == 'A':
-        if 'D' in same_time:
-            return False
+        if cand['D'] != 0:
+            if cand['A'][1] ==  cand['D'][1]:
+                return False
     
     if i == 'B':
-        if 'A' in same_time:
-            return False
+        if cand['A'] != 0:
+            if cand['B'][1] ==  cand['A'][1]:
+                return False
     
     if i == 'C':
-        if 'B' in same_time:
-            return False
+        if cand['B'] != 0:
+            if cand['C'][1] ==  cand['B'][1]:
+                return False
 
     if i == 'D':
-        if 'C' in same_time:
-            return False
+        if cand['C'] != 0:
+            if cand['D'][1] ==  cand['C'][1]:
+                return False
 
-    return True 
+    return True
 
-def no_move(same_time):
-    if isinstance(same_time[0], tuple):
-        same_time = [i[2] for i in same_time]
+def solution(n, state):
     
-    if 'A' in same_time and 'B' in same_time and 'C' in same_time and 'D' in same_time:
-        return True
-    return False
-    
-
-def solution(n, car):
-
-    Car = deque([[idx, int(data[0]), data[1]] for idx, data in enumerate(car)])
-    ans = [0] * n  
-    ck = [0] * n
-    same_time = deque([])
-    
-    idx, before_t, before_w = Car.popleft()
-    same_time.append((idx, before_t, before_w))
-    
-    while Car:
+    ans = [-1]*n
+    while True:
+        road = ['A','B','C','D']
+        cand = defaultdict(zero)
         
-        idx, now_t,now_w = Car.popleft()
+        check = 0
+        for i in road:
+            if len(state[i]) != 0:
+                cand[i] = state[i].popleft()
+                check += 1
         
-        if len(same_time) == 0:
-            same_time.append((idx, now_t, now_w))
-            before_t = now_t
-            continue
-                        
-        if now_t == before_t:
-            same_time.append((idx, now_t, now_w))  
-            continue
+        if check == 0:
+            break
+        
+        
+        if check == 4: 
+            num = cand['A'][1]
+            if cand['B'][1] == num and cand['C'][1] == num and cand['D'][1] == num:
+                break
+        
+        
+        time = min([cand[i][1] for i in road if cand[i] != 0])
+        
+        for i in road:
             
-        if now_t != before_t:
-            Car.appendleft([idx, now_t, now_w])
+            if cand[i] == 0:
+                continue
             
-            if no_move(same_time):
-                return [ans[i] if ck[i] == 1 else -1 for i in range(len(ck))]
-            
-            check = {'A':0, 'B':0,'C':0,'D':0} 
-            only_w = [i[2] for i in same_time]
-            for idx, t, w in same_time:
+            if cand[i][1] != time:
+                state[i].appendleft(cand[i])
+                continue
                 
-                if possible(w, only_w) and check[w] == 0:
-                    ans[idx] = before_t
-                    ck[idx] = 1
-                    check[w] = 1
+            if cand[i][1] == time:
+                if possible(i, cand) == True:
+                    ans[cand[i][0]] = cand[i][1]
+                
                 else:
-                    Car.appendleft([idx, t + 1, w])
-            
-            same_time = deque([])
-    
-    
-    if len(same_time) > 0 :
-        if no_move(same_time):
-            return [ans[i] if ck[i] == 1 else -1 for i in range(len(ck))]
+                    
+                    if len(state[i]) != 0:
+                        for idx, k in enumerate(state[i]):
+                            if k[1] > cand[i][1]+1:
+                                break
+
+                            if k[1] == cand[i][1]+1:
+                                state[i][idx][1] += 1
+
+                    state[i].appendleft([cand[i][0], cand[i][1] + 1])
+                    
         
-        only_w = [i[2] for i in same_time] 
-        check = {'A':0, 'B':0,'C':0,'D':0}
-        while same_time:
-            
-            idx, t, w = same_time.popleft()
-            if t > before_t:
-                before_t = t
-                only_w = [i[2] for i in same_time]
-                if len(only_w) == 0:
-                    ans[idx] = before_t
-                    break
-                check = {'A':0, 'B':0,'C':0,'D':0}
-            elif t == before_t:       
-                if possible(w, only_w) and check[w] == 0:
-                    ans[idx] = before_t
-                    ck[idx] = 1
-                    check[w] = 1
-
-                else:
-                    same_time.append((idx, before_t+1 ,w))   
-
     return ans
 
 if __name__ == "__main__":
-    n = int(input())
-    car = [list(map(str, input().split())) for _ in range(n)]
-    for i in solution(n,car):
-        print(i)
     
+    n = int(read().rstrip())
+    state = dict()
+    for i in ['A','B','C','D']:
+        state[i] = deque([])
+        
+    for i in range(n):
+        t,w = map(str, read().split())
+        state[w].append([i,int(t)])
+        
+    for i in solution(n,state):
+        print(i)
