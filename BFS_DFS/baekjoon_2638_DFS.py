@@ -23,7 +23,7 @@ def dfs(graph, n,m,row,col,color):
             if graph[nrow][ncol] == 0:
                 graph = dfs(graph, n,m,nrow,ncol,color)
                      
-    return graphvi
+    return graph
 
 def solution(n,m,graph):
     
